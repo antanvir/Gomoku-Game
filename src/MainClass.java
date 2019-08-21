@@ -13,8 +13,7 @@ public class MainClass {
 		
 		Board board = new Board(width, 10);
 		
-		
-//		final Game game = new Game(board);
+
 		
 		final TwoPlayerGame humanGame = new TwoPlayerGame(board);
 		
@@ -25,10 +24,7 @@ public class MainClass {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				
-//				Object[] settings = gui.fetchSettings();
-				
-//				int depth = (Integer)(settings[0]);
-//				boolean computerStarts = (Boolean)(settings[1]);
+
 				boolean computerStarts = false;
 				int depth = 4;
 				boolean playingWithComputer = gui.playWithComputer();
