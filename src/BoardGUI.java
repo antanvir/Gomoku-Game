@@ -23,9 +23,9 @@ public class BoardGUI extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private int sideLength; // Side length of the square board in pixels
-	private int boardSize; // Number of cells in one side (e.g. 15 for a 15x15 board)
-	private final int cellLength; // Side length of a single cell in pixels
+	private int sideLength; 
+	private int boardSize; 
+	private final int cellLength;
 	
 	
 	public BoardGUI(int sideLength, int boardSize) {
@@ -81,10 +81,7 @@ public class BoardGUI extends JPanel {
 		int x = (sideLength/2 - metrics.stringWidth(text)*2);
 		int y = sideLength/2;
 		
-//		g2D.drawString(text,x-2,y);
-//		g2D.drawString(text,x+2,y);
-//		g2D.drawString(text,x,y-2);
-//		g2D.drawString(text,x,y+2);
+
 		
 		g2D.setColor(winner == 2 ? Color.green : (winner == 1 ? Color.red : Color.blue));
 		
