@@ -14,7 +14,7 @@ public class Board {
 		boardMatrix = new int[boardSize][boardSize];
 		
 	}
-	// Fake copy constructor (only copies the boardMatrix)
+	
 	public Board(Board board) {
 		
 		int[][] matrixToCopy = board.getBoardMatrix();		
@@ -41,7 +41,6 @@ public class Board {
 	
 	public boolean addStone(int posX, int posY, boolean black) {
 		
-		// Check whether the cell is empty or not
 		if(boardMatrix[posY][posX] != 0) return false;
 		
 		gui.drawStone(posX, posY, black);
