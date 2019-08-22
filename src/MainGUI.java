@@ -47,20 +47,7 @@ public class MainGUI extends JPanel {
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.setBackground(Color.white);
 	    frame.setSize(width, height);
-	 
-//	    MainGUI panel = new MainGUI(); 
-//	    frame.getContentPane().add(panel); 
-//	    frame.setVisible(true);
-	    
-//		
-////		setSize(width , height);
-//		setBounds(50, 100, width, height);
-//		setTitle(title);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-//		
-//		
-//		setupPanel = new JPanel();
+
 			
 		
 		selectionPanel = new JPanel();
@@ -72,7 +59,7 @@ public class MainGUI extends JPanel {
 		
 		startingPanel = new JPanel();
 		startingPanel.setBounds(0, 2*height/3, width,  height);
-//		startingPanel.setBackground(Color.LIGHT_GRAY);
+
 		
 		welcomeMsg = new JLabel("    WELCOME TO GOMOKU WORLD   ");
 		buttonStart = new JButton("READY SET GOOO!");
@@ -120,7 +107,7 @@ public class MainGUI extends JPanel {
 		if( rComputer.isSelected() ) {
 			difficulty = 4;
 		} 
-//		else difficulty = 3;
+
 		
 		boolean computerStarts = rComputer.isSelected();
 		Object[] x = {difficulty, computerStarts};
