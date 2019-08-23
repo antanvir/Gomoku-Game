@@ -148,23 +148,8 @@ public class TwoPlayerGame {
 		int[][] boardMatrix = board.getBoardMatrix();
 		
 		// Horizontal lookup
-		for(int i=0; i<boardMatrix.length; i++) {
-			int consecutive = 0;
-			for(int j=0; j<boardMatrix[0].length; j++) {
-				
-				if(consecutive >= 5) {
-					return true;
-				}
-				if(boardMatrix[i][j] == playerID) {
-					consecutive++;
-					
-				}
-				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
-					consecutive = 0;
-				}
-			}
-			
-		}
+		horizontalLookup(playerID,boardMatrix);
+
 		
 		//Vertical Lookup
 		for(int j=0; j<boardMatrix.length; j++) {
@@ -237,5 +222,30 @@ public class TwoPlayerGame {
 	private boolean playMove(int posX, int posY, boolean black) {
 		return board.addStone(posX, posY, black);
 	}
-	
+
+	private  boolean horizontalLookup(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
+		for(int i=0; i<boardMatrix.length; i++) {
+			int consecutive = 0;
+			for(int j=0; j<boardMatrix[0].length; j++) {
+
+				if(consecutive >= 5) {
+					return true;
+				}
+				if(boardMatrix[i][j] == playerID) {
+					consecutive++;
+
+				}
+				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
+					consecutive = 0;
+				}
+			}
+
+		}
+		return false;
+
+	}
+
 }
