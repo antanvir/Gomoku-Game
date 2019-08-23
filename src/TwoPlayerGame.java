@@ -147,67 +147,15 @@ public class TwoPlayerGame {
 	private boolean checkWinner(int playerID) {
 		int[][] boardMatrix = board.getBoardMatrix();
 		
-		// Horizontal lookup
-		horizontalLookup(playerID,boardMatrix);
 
-		
-		//Vertical Lookup
-		for(int j=0; j<boardMatrix.length; j++) {
-			int consecutive = 0;
-			for(int i=0; i<boardMatrix[0].length; i++) {
-				
-				if(consecutive >= 5) {
-					return true;
-				}
-				if(boardMatrix[i][j] == playerID) {
-					consecutive++;
-				}
-				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
-					consecutive = 0;
-				}
-			}
-
-		}
-		
-		// From bottom-left to top-right diagonally
-		for (int k = 0; k <= 2 * (boardMatrix.length - 1); k++) {
-			int iStart = Math.max(0, k - boardMatrix.length + 1);
-			int iEnd = Math.min(boardMatrix.length - 1, k);
-			
-			int consecutive = 0;
-			for (int i = iStart; i <= iEnd; ++i) {
-				int j = k - i;
-				if(consecutive >= 5) {
-					return true;
-				}
-				if(boardMatrix[i][j] == playerID) {
-					consecutive++;
-				}
-				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
-					consecutive = 0;
-				}
-			}
-		}
-		
-		// From top-left to bottom-right diagonally
-		for (int k = 1-boardMatrix.length; k < boardMatrix.length; k++) {
-			int iStart = Math.max(0, k);
-			int iEnd = Math.min(boardMatrix.length + k - 1, boardMatrix.length-1);
-			
-			int consecutive = 0;
-			for (int i = iStart; i <= iEnd; ++i) {
-				int j = i - k;
-				if(consecutive >= 5) {
-					return true;
-				}
-				if(boardMatrix[i][j] == playerID) {
-					consecutive++;
-				}
-				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
-					consecutive = 0;
-				}
-			}
-		}
+		if(horizontalLookup(playerID,boardMatrix)==true)
+			return true;
+		if(verticalLookup(playerID,boardMatrix)==true)
+			return true;
+		if(bottomLeftToRightLookup(playerID,boardMatrix)==true)
+			return true;
+		if(topLeftToBottomRight(playerID,boardMatrix)==true)
+			return true;
 		
 		return false;
 	}
@@ -245,6 +193,83 @@ public class TwoPlayerGame {
 
 		}
 		return false;
+
+	}
+
+	private  boolean verticalLookup(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
+		for(int j=0; j<boardMatrix.length; j++) {
+			int consecutive = 0;
+			for(int i=0; i<boardMatrix[0].length; i++) {
+
+				if(consecutive >= 5) {
+					return true;
+				}
+				if(boardMatrix[i][j] == playerID) {
+					consecutive++;
+				}
+				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
+					consecutive = 0;
+				}
+			}
+
+		}
+		return false;
+
+	}
+
+	private  boolean bottomLeftToRightLookup(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
+		for (int k = 0; k <= 2 * (boardMatrix.length - 1); k++) {
+			int iStart = Math.max(0, k - boardMatrix.length + 1);
+			int iEnd = Math.min(boardMatrix.length - 1, k);
+
+			int consecutive = 0;
+			for (int i = iStart; i <= iEnd; ++i) {
+				int j = k - i;
+				if(consecutive >= 5) {
+					return true;
+				}
+				if(boardMatrix[i][j] == playerID) {
+					consecutive++;
+				}
+				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
+					consecutive = 0;
+				}
+			}
+		}
+		return false;
+
+	}
+
+	private  boolean topLeftToBottomRight(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
+		for (int k = 1-boardMatrix.length; k < boardMatrix.length; k++) {
+			int iStart = Math.max(0, k);
+			int iEnd = Math.min(boardMatrix.length + k - 1, boardMatrix.length-1);
+
+			int consecutive = 0;
+			for (int i = iStart; i <= iEnd; ++i) {
+				int j = i - k;
+				if(consecutive >= 5) {
+					return true;
+				}
+				if(boardMatrix[i][j] == playerID) {
+					consecutive++;
+				}
+				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
+					consecutive = 0;
+				}
+			}
+		}
+		return false;
+
 
 	}
 
