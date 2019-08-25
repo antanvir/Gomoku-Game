@@ -12,11 +12,9 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 
-public class MainGUI extends JPanel {
+public class GUI_Frame extends JPanel {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	
 	private int difficulty;
@@ -41,26 +39,13 @@ public class MainGUI extends JPanel {
 	private JFrame frame;
 
 	
-	public MainGUI(int width, int height, String title) {
+	public GUI_Frame(int width, int height, String title) {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		frame = new JFrame(title);
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.setBackground(Color.white);
 	    frame.setSize(width, height);
-	 
-//	    MainGUI panel = new MainGUI(); 
-//	    frame.getContentPane().add(panel); 
-//	    frame.setVisible(true);
-	    
-//		
-////		setSize(width , height);
-//		setBounds(50, 100, width, height);
-//		setTitle(title);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-//		
-//		
-//		setupPanel = new JPanel();
+
 			
 		
 		selectionPanel = new JPanel();
@@ -72,7 +57,7 @@ public class MainGUI extends JPanel {
 		
 		startingPanel = new JPanel();
 		startingPanel.setBounds(0, 2*height/3, width,  height);
-//		startingPanel.setBackground(Color.LIGHT_GRAY);
+
 		
 		welcomeMsg = new JLabel("    WELCOME TO GOMOKU WORLD   ");
 		buttonStart = new JButton("READY SET GOOO!");
@@ -113,20 +98,6 @@ public class MainGUI extends JPanel {
 	}
 	
 	
-
-	
-	public Object[] fetchSettings() {
-		
-		if( rComputer.isSelected() ) {
-			difficulty = 4;
-		} 
-//		else difficulty = 3;
-		
-		boolean computerStarts = rComputer.isSelected();
-		Object[] x = {difficulty, computerStarts};
-		return x;
-	}
-	
 	
 	public boolean playWithComputer() {
 		return rComputer.isSelected();
@@ -149,8 +120,8 @@ public class MainGUI extends JPanel {
 		frame.pack();
 	}
 	
-	public void pack() {
-		frame.pack();
-	}
+//	public void pack() {
+//		frame.pack();
+//	}
 	
 }

@@ -2,20 +2,19 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 
-
-public class Board {
+public class BoardMaker {
 	
 	private BoardGUI gui;
 	private int[][] boardMatrix; // 0: Empty,  1: White,  2: Black
 	
 	
-	public Board(int sideLength, int boardSize) {
-		gui = new BoardGUI(sideLength, boardSize);
-		boardMatrix = new int[boardSize][boardSize];
+	public BoardMaker(int boardWidth, int totalCell) {
+		gui = new BoardGUI(boardWidth, totalCell);
+		boardMatrix = new int[totalCell][totalCell];
 		
 	}
-	// Fake copy constructor (only copies the boardMatrix)
-	public Board(Board board) {
+	
+	public BoardMaker(BoardMaker board) {
 		
 		int[][] matrixToCopy = board.getBoardMatrix();		
 		boardMatrix = new int[matrixToCopy.length][matrixToCopy.length];
@@ -29,8 +28,8 @@ public class Board {
 	}
 	
 	
-	public int getBoardSize() {
-		return boardMatrix.length;
+	public void startListening(MouseListener listener) {
+		gui.attachListener(listener);
 	}
 	
 	
@@ -41,7 +40,6 @@ public class Board {
 	
 	public boolean addStone(int posX, int posY, boolean black) {
 		
-		// Check whether the cell is empty or not
 		if(boardMatrix[posY][posX] != 0) return false;
 		
 		gui.drawStone(posX, posY, black);
@@ -50,7 +48,33 @@ public class Board {
 		
 	}
 	
+
+	public int getBoardSize() {
+		return boardMatrix.length;
+	}
 	
+	
+	public int[][] getBoardMatrix() {
+		return boardMatrix;
+	}
+	
+	
+	public BoardGUI getGUI() {
+		return gui;
+	}
+	
+	
+	public int getRelativePos(int x) {
+		return gui.getRelativePos(x);
+	}
+	
+	
+	public void printWinner(int winner, String text) {
+		gui.printWinner(winner, text);
+	}
+	
+	
+
 	public ArrayList<int[]> generateMoves() {
 		ArrayList<int[]> moveList = new ArrayList<int[]>();
 		
@@ -116,40 +140,6 @@ public class Board {
 		
 	}
 	
-	
-	public int[][] getBoardMatrix() {
-		return boardMatrix;
-	}
-	
-	
-	public void startListening(MouseListener listener) {
-		gui.attachListener(listener);
-	}
-	
-	
-	public BoardGUI getGUI() {
-		return gui;
-	}
-	
-	
-	public int getRelativePos(int x) {
-		return gui.getRelativePos(x);
-	}
-	
-	
-	public void printWinner(int winner, String text) {
-		gui.printWinner(winner, text);
-	}
-	
-	
-	public void thinkingStarted() {
-		gui.setAIThinking(true);
-	}
-	
-	
-	public void thinkingFinished() {
-		gui.setAIThinking(false);
-	}
 	
 	
 }

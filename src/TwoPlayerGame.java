@@ -4,8 +4,8 @@ import java.awt.event.MouseListener;
 
 public class TwoPlayerGame {
 
-//	private Minimax ai;
-	private Board board;
+
+	private BoardMaker board;
 	private boolean isFirstPlayersTurn = true;
 	private boolean gameFinished = false;
 	private int minimaxDepth = 3;
@@ -14,19 +14,15 @@ public class TwoPlayerGame {
 	private int winner; // 0: There is no winner yet, 1: Second Player Wins, 2: First Player Wins
 	
 	
-	public TwoPlayerGame(Board board) {
-		this.board = board;
-//		ai = new Minimax(board);
-		
+	public TwoPlayerGame(BoardMaker board) {
+		this.board = board;		
 		winner = 0;
 	}
-	/*
-	 * 	Loads the cache and starts the game, enabling human player interactions.
-	 */
+	
+	
 	public void start() {
 		
 		
-		// Make the board start listening for mouse clicks.
 		board.startListening(new MouseListener() {
 
 			public void mouseClicked(MouseEvent arg0) {
@@ -58,18 +54,7 @@ public class TwoPlayerGame {
 			
 		});
 	}
-	/*
-	 * 	Sets the depth of the minimax tree. (i.e. how many moves ahead should the AI calculate.)
-	 */
-	public void setAIDepth(int depth) {
-		this.minimaxDepth = depth;
-		
-	}
 	
-	
-	public void setAIStarts(boolean aiStarts) {
-		this.aiStarts = aiStarts;
-	}
 	
 	
 	public class MouseClickHandler implements Runnable{
@@ -79,21 +64,21 @@ public class TwoPlayerGame {
 		}
 		
 		public void run() {
+			
 			if(gameFinished) return;
 			boolean isWinner = false;
-			
-			// Find out which cell of the board do the clicked coordinates belong to.
+
 			if(isFirstPlayersTurn) {
-				System.out.println("Here BLACK STONE");
+				
+				System.out.println("BLACK STONE");
 				int posX = board.getRelativePos( e.getX() );
 				int posY = board.getRelativePos( e.getY() );
 				
-				// Place a black stone to that cell.
+				// Place black stone to that cell.
 				if(!playMove(posX, posY, true)) {
 					return;
 				}
 				
-				// Check if the last move ends the game.
 				isWinner = checkWinner(2);
 				
 				if(isWinner) {
@@ -104,7 +89,7 @@ public class TwoPlayerGame {
 				}
 			}
 			else {
-				System.out.println("Here WHITE STONE");
+				System.out.println("WHITE STONE");
 				int posX = board.getRelativePos( e.getX() );
 				int posY = board.getRelativePos( e.getY() );
 				
@@ -113,7 +98,6 @@ public class TwoPlayerGame {
 					return;
 				}
 				
-				// Check if the last move ends the game.
 				isWinner = checkWinner(1);
 				
 				if(isWinner) {
@@ -126,13 +110,12 @@ public class TwoPlayerGame {
 			
 			if(board.generateMoves().size() == 0) {
 				System.out.println("No possible moves left. Game Over.");
-				board.printWinner(0, "MATCH TIED!"); // Prints "TIED!"
+				board.printWinner(0, "MATCH TIED!"); 
 				gameFinished = true;
 				return;
 				
 			}
-			setPlayersTurn(!isFirstPlayersTurn);
-			
+			setPlayersTurn(!isFirstPlayersTurn);			
 			
 		}
 		
@@ -144,33 +127,63 @@ public class TwoPlayerGame {
 	}
 	
 	
+
+	private boolean playMove(int posX, int posY, boolean black) {
+		return board.addStone(posX, posY, black);
+	}
+
+	
 	private boolean checkWinner(int playerID) {
 		int[][] boardMatrix = board.getBoardMatrix();
 		
-		// Horizontal lookup
+
+		if(horizontalLookup(playerID,boardMatrix)==true)
+			return true;
+		if(verticalLookup(playerID,boardMatrix)==true)
+			return true;
+		if(bottomLeftToRightLookup(playerID,boardMatrix)==true)
+			return true;
+		if(topLeftToBottomRight(playerID,boardMatrix)==true)
+			return true;
+		
+		return false;
+	}
+	
+	
+	
+	private  boolean horizontalLookup(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
 		for(int i=0; i<boardMatrix.length; i++) {
 			int consecutive = 0;
 			for(int j=0; j<boardMatrix[0].length; j++) {
-				
+
 				if(consecutive >= 5) {
 					return true;
 				}
 				if(boardMatrix[i][j] == playerID) {
 					consecutive++;
-					
+
 				}
 				else if(consecutive > 0 && boardMatrix[i][j] != playerID) {
 					consecutive = 0;
 				}
 			}
-			
+
 		}
-		
-		//Vertical Lookup
+		return false;
+
+	}
+
+	private  boolean verticalLookup(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
 		for(int j=0; j<boardMatrix.length; j++) {
 			int consecutive = 0;
 			for(int i=0; i<boardMatrix[0].length; i++) {
-				
+
 				if(consecutive >= 5) {
 					return true;
 				}
@@ -183,12 +196,18 @@ public class TwoPlayerGame {
 			}
 
 		}
-		
-		// From bottom-left to top-right diagonally
+		return false;
+
+	}
+
+	private  boolean bottomLeftToRightLookup(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
 		for (int k = 0; k <= 2 * (boardMatrix.length - 1); k++) {
 			int iStart = Math.max(0, k - boardMatrix.length + 1);
 			int iEnd = Math.min(boardMatrix.length - 1, k);
-			
+
 			int consecutive = 0;
 			for (int i = iStart; i <= iEnd; ++i) {
 				int j = k - i;
@@ -203,12 +222,18 @@ public class TwoPlayerGame {
 				}
 			}
 		}
-		
-		// From top-left to bottom-right diagonally
+		return false;
+
+	}
+
+	private  boolean topLeftToBottomRight(int playerID, int [][] boardMatrix){
+
+		boardMatrix = board.getBoardMatrix();
+
 		for (int k = 1-boardMatrix.length; k < boardMatrix.length; k++) {
 			int iStart = Math.max(0, k);
 			int iEnd = Math.min(boardMatrix.length + k - 1, boardMatrix.length-1);
-			
+
 			int consecutive = 0;
 			for (int i = iStart; i <= iEnd; ++i) {
 				int j = i - k;
@@ -223,19 +248,9 @@ public class TwoPlayerGame {
 				}
 			}
 		}
-		
 		return false;
+
+
 	}
-	
-//	private int checkWinner() {
-//		if(Minimax.getScore(board, true, false) >= Minimax.getWinScore()) return 2; // Black stone, Human Player
-//		if(Minimax.getScore(board, false, true) >= Minimax.getWinScore()) return 1;
-//		return 0;
-//	}
-	
-	
-	private boolean playMove(int posX, int posY, boolean black) {
-		return board.addStone(posX, posY, black);
-	}
-	
+
 }

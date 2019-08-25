@@ -14,44 +14,41 @@ import javax.swing.JPanel;
 
 public class BoardGUI extends JPanel {
 	
-	/**
-	 * 
-	 */
+	
 	private Graphics2D g2D;
 	private BufferedImage image;
-	private boolean isAIThinking = false;
 	
 	private static final long serialVersionUID = 1L;
 	
-	private int sideLength; // Side length of the square board in pixels
-	private int boardSize; // Number of cells in one side (e.g. 15 for a 15x15 board)
-	private final int cellLength; // Side length of a single cell in pixels
+	private int boardWidth; 
+	private int totalCell; 
+	private final int cellLength;
 	
 	
-	public BoardGUI(int sideLength, int boardSize) {
-		this.sideLength = sideLength;
-		this.boardSize = boardSize;
-		this.cellLength  = sideLength / boardSize;
+	public BoardGUI(int boardWidth, int totalCell) {
+		this.boardWidth = boardWidth;
+		this.totalCell = totalCell;
+		this.cellLength  = boardWidth / totalCell;
 		
 		
-		image = new BufferedImage(sideLength, sideLength, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage(boardWidth, boardWidth, BufferedImage.TYPE_INT_ARGB);
 		
 		g2D = (Graphics2D)image.getGraphics();
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 			 RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g2D.setColor(Color.LIGHT_GRAY);
-		g2D.fillRect(0,0,sideLength, sideLength);
+		g2D.fillRect(0,0,boardWidth, boardWidth);
 		
 		g2D.setColor(Color.black);
 		
-		for(int i=1; i<=boardSize; i++) {
-			g2D.drawLine(i*cellLength, 0, i*cellLength, sideLength);
+		for(int i=1; i<=totalCell; i++) {
+			g2D.drawLine(i*cellLength, 0, i*cellLength, boardWidth);
 		}
 		
 		
-		for(int i=1; i<=boardSize; i++) {
-			g2D.drawLine(0, i*cellLength, sideLength, i*cellLength);
+		for(int i=1; i<=totalCell; i++) {
+			g2D.drawLine(0, i*cellLength, boardWidth, i*cellLength);
 		}
 		
 		
@@ -59,14 +56,14 @@ public class BoardGUI extends JPanel {
 	
 	
 	public int getRelativePos(int x) {
-		if(x >= sideLength) x = sideLength-1;
+		if(x >= boardWidth) x = boardWidth-1;
 		
-		return (int) ( x * boardSize / sideLength );
+		return (int) ( x * totalCell / boardWidth );
 	}
 	
 	
 	public Dimension getPreferredSize() {
-		return new Dimension(sideLength, sideLength);
+		return new Dimension(boardWidth, boardWidth);
 	}
 	
 	
@@ -78,13 +75,10 @@ public class BoardGUI extends JPanel {
 		g2D.setFont(new Font(g2D.getFont().getName(), Font.PLAIN, 48));
 		
 		g2D.setColor(Color.black);
-		int x = (sideLength/2 - metrics.stringWidth(text)*2);
-		int y = sideLength/2;
+		int x = (boardWidth/2 - metrics.stringWidth(text)*2);
+		int y = boardWidth/2;
 		
-//		g2D.drawString(text,x-2,y);
-//		g2D.drawString(text,x+2,y);
-//		g2D.drawString(text,x,y-2);
-//		g2D.drawString(text,x,y+2);
+
 		
 		g2D.setColor(winner == 2 ? Color.green : (winner == 1 ? Color.red : Color.blue));
 		
@@ -97,7 +91,7 @@ public class BoardGUI extends JPanel {
 	
 	public void drawStone(int posX, int posY, boolean black) {
 		
-		if(posX >= boardSize || posY >= boardSize) return;
+		if(posX >= totalCell || posY >= totalCell) return;
 		
 		
 		
@@ -115,12 +109,12 @@ public class BoardGUI extends JPanel {
 					 (int)(cellLength*0.8));
 		
 		try {
-			Thread.sleep(500);
+			Thread.sleep(600);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		g2D.setColor(Color.black);
+		
+		g2D.setColor(Color.blue);
 		g2D.setStroke(new BasicStroke(2));
 		g2D.drawOval((int)(cellLength*(posX+0.1)), 
 					 (int)(cellLength*(posY+0.1)), 
@@ -138,40 +132,18 @@ public class BoardGUI extends JPanel {
 		Graphics2D g2D = (Graphics2D) g.create();
 		
 		// Draw the board
-		g2D.drawImage(image, 0, 0, sideLength, sideLength, null);
+		g2D.drawImage(image, 0, 0, boardWidth, boardWidth, null);
 		
-		if(isAIThinking) {
-			printThinking(g2D);
-		}
 		
-		// Draw the border
+		// Drawing border
 		g2D.setColor(Color.black);
-        g2D.drawRect(0, 0, sideLength, sideLength);
+        g2D.drawRect(0, 0, boardWidth, boardWidth);
 	}
 	
-	
-	private void printThinking(Graphics2D g2D) {
-		FontMetrics metrics = g2D.getFontMetrics(g2D.getFont());
-		String text = "Thinking...";
-		
-		g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-   			 				 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g2D.setFont(new Font(g2D.getFont().getName(), Font.PLAIN, 48));
-		
-		int x = (sideLength/2 - metrics.stringWidth(text)*2);
-		int y = sideLength/2;
-		
-		g2D.setColor(new Color(255, 0, 0, 150));
-		
-		g2D.drawString(text,x,y);
-	}
 	
 	public void attachListener(MouseListener listener) {
 		addMouseListener(listener);
 	}
 	
-	public void setAIThinking(boolean flag) {
-		isAIThinking = flag;
-		repaint();
-	}
+	
 }
