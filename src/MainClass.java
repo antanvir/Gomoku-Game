@@ -17,6 +17,38 @@ public class MainClass {
 		final AI_Game game = new AI_Game(board);
 			
 
+		gui.listenGameStartButton(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+
+				boolean computerStarts = false;
+				int depth = 4;
+				boolean playingWithComputer = gui.playWithComputer();
+				System.out.println(playingWithComputer);
+				
+				System.out.println("Depth: " + depth + " AI Makes the first move: " + computerStarts );
+				
+				gui.attachBoard(board.getGUI());			
+				gui.showBoard();
+				
+				if(playingWithComputer) {
+
+					game.setAIDepth(depth);
+					game.setAIStarts(computerStarts);
+					
+					game.start();
+
+				}
+				else {									
+
+					humanGame.start();
+				}
+				
+			}
+			
+		});
 		
 		
 		
