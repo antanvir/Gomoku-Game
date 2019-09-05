@@ -33,17 +33,17 @@ public class BoardMaker {
 	}
 	
 	
-	public void addStoneNoGUI(int posX, int posY, boolean black) {
-		boardMatrix[posY][posX] = black ? 2 : 1;
+	public void addStoneNoGUI(int posX, int posY, boolean human) {
+		boardMatrix[posY][posX] = human ? 2 : 1;
 	}
 	
 	
-	public boolean addStone(int posX, int posY, boolean black) {
+	public boolean addStone(int posX, int posY, boolean human) {
 		
 		if(boardMatrix[posY][posX] != 0) return false;
 		
-		gui.drawStone(posX, posY, black);
-		boardMatrix[posY][posX] = black ? 2 : 1;
+		gui.drawStone(posX, posY, human);
+		boardMatrix[posY][posX] = human ? 2 : 1;
 		return true;
 		
 	}

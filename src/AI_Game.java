@@ -99,7 +99,7 @@ public class AI_Game {
 				return;
 			}
 
-			int[] aiMove = ai.calculateNextMove(minimaxDepth);
+			int[] aiMove = ai.findNextMove(minimaxDepth);
 			
 			if(aiMove == null) {
 				System.out.println("No possible moves left. Game Over.");

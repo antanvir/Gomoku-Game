@@ -90,24 +90,24 @@ public class BoardGUI extends JPanel {
 	}
 	
 	
-	public void drawStone(int posX, int posY, boolean black) {
+	public void drawStone(int posX, int posY, boolean human) {
 		
 		if(posX >= totalCell || posY >= totalCell) return;
 		
 		
 		
-		g2D.setColor(black ? Color.black : Color.white);
-		g2D.fillOval((int)(cellLength*(posX+0.1)), 
-					 (int)(cellLength*(posY+0.1)), 
-					 (int)(cellLength*0.8), 
-					 (int)(cellLength*0.8));
+		g2D.setColor(human ? Color.green : Color.orange);
+		g2D.fillOval((int)(cellLength*(posX+0.2)), 
+					 (int)(cellLength*(posY+0.2)), 
+					 (int)(cellLength*0.7), 
+					 (int)(cellLength*0.7));
 		
 		g2D.setColor(Color.blue);
 		g2D.setStroke(new BasicStroke((float)1.5));
-		g2D.drawOval((int)(cellLength*(posX+0.1)), 
-					 (int)(cellLength*(posY+0.1)), 
-					 (int)(cellLength*0.8), 
-					 (int)(cellLength*0.8));
+		g2D.drawOval((int)(cellLength*(posX+0.2)), 
+					 (int)(cellLength*(posY+0.2)), 
+					 (int)(cellLength*0.7), 
+					 (int)(cellLength*0.7));
 		
 		try {
 			Thread.sleep(600);
@@ -117,10 +117,10 @@ public class BoardGUI extends JPanel {
 		
 		g2D.setColor(Color.black);
 		g2D.setStroke(new BasicStroke(2));
-		g2D.drawOval((int)(cellLength*(posX+0.1)), 
-					 (int)(cellLength*(posY+0.1)), 
-					 (int)(cellLength*0.8), 
-					 (int)(cellLength*0.8));
+		g2D.drawOval((int)(cellLength*(posX+0.2)), 
+					 (int)(cellLength*(posY+0.2)), 
+					 (int)(cellLength*0.7), 
+					 (int)(cellLength*0.7));
 		
 		repaint();
 	}

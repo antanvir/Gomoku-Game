@@ -5,7 +5,7 @@ public class MinimaxAlgorithm {
 	
 	public static int moveCount = 0;
 	private BoardMaker board;
-	private static final int winScore = 100000000;
+	private static final int highestScore = 200000000;
 	
 	
 	public MinimaxAlgorithm(BoardMaker board) {
@@ -13,45 +13,45 @@ public class MinimaxAlgorithm {
 	}
 	
 	public static int getWinScore() {
-		return winScore;
+		return highestScore;
 	}
 	
-	public static double evaluateBoardForWhite(BoardMaker board, boolean blacksTurn) {
-		moveCount++;
+	public static double doEvaluation(BoardMaker board, boolean HumansTurn) {
+//		moveCount++;
 		
 		
-		double blackScore = getScore(board, true, blacksTurn);
-		double whiteScore = getScore(board, false, blacksTurn);
+		double blackScore = getScore(board, true, HumansTurn);
+		double whiteScore = getScore(board, false, HumansTurn);
 		
 		if(blackScore == 0) blackScore = 1.0;
 		
 		return whiteScore / blackScore;
 		
 	}
-	public static int getScore(BoardMaker board, boolean forBlack, boolean blacksTurn) {
+	public static int getScore(BoardMaker board, boolean isHuman, boolean HumansTurn) {
 		
 		
 		int[][] boardMatrix = board.getBoardMatrix();
-		return evaluateHorizontal(boardMatrix, forBlack, blacksTurn) +
-				evaluateVertical(boardMatrix, forBlack, blacksTurn) +
-				evaluateDiagonal(boardMatrix, forBlack, blacksTurn);
+		return horizontalChecking(boardMatrix, isHuman, HumansTurn) +
+				verticalChecking(boardMatrix, isHuman, HumansTurn) +
+				diagonalChecking(boardMatrix, isHuman, HumansTurn);
 	}
 	
-	public int[] calculateNextMove(int depth) {
+	public int[] findNextMove(int depth) {
 
 		int[] move = new int[2];
-		long startTime = System.currentTimeMillis();
-		// Check if any available move can finish the game
-		Object[] bestMove = searchWinningMove(board); 
+//		long startTime = System.currentTimeMillis();
+
+		Object[] bestMove = isThereAnyWinningMove(board); 
 		if(bestMove != null ) {
-			System.out.println("Finisher!");
+			System.out.println("Finished!");
 			move[0] = (Integer)(bestMove[1]);
 			move[1] = (Integer)(bestMove[2]);
-			//System.out.println(move[0] + " " + move[1]);
+
 			
 		} else {
-			// If there is no such move, search the minimax tree with suggested depth.
-			bestMove = minimaxSearchAB(depth, board, true, -1.0, getWinScore());
+
+			bestMove = MiniMax(depth, board, true, -1.0, getWinScore());
 			if(bestMove[1] == null) {
 				move = null;
 			} else {
@@ -59,9 +59,9 @@ public class MinimaxAlgorithm {
 				move[1] = (Integer)(bestMove[2]);
 			}
 		}
-		System.out.println("Cases calculated: " + moveCount + " Calculation time: " + (System.currentTimeMillis() - startTime) + " ms");
+//		System.out.println("Cases calculated: " + moveCount + " Calculation time: " + (System.currentTimeMillis() - startTime) + " ms");
 		
-		moveCount=0;
+//		moveCount=0;
 		
 		return move;
 		
@@ -69,20 +69,20 @@ public class MinimaxAlgorithm {
 	}
 	
 	
-	private static Object[] searchWinningMove(BoardMaker board) {
+	private static Object[] isThereAnyWinningMove(BoardMaker board) {
 		ArrayList<int[]> allPossibleMoves = board.generateMoves();
 		Object[] winningMove = new Object[3];
 		
-		// Iterate for all possible moves
+
 		for(int[] move : allPossibleMoves) {
 			moveCount++;
-			// Create a temporary board that is equivalent to the current board
+
 			BoardMaker dummyBoard = new BoardMaker(board);
-			// Play the move to that temporary board without drawing anything
+
 			dummyBoard.addStoneNoGUI(move[1], move[0], false);
 			
-			// If the white player has a winning score in that temporary board, return the move.
-			if(getScore(dummyBoard,false,false) >= winScore) {
+
+			if(getScore(dummyBoard,false,false) >= highestScore) {
 				winningMove[1] = move[0];
 				winningMove[2] = move[1];
 				System.out.println(move[0] + " " + move[1]);
@@ -94,15 +94,11 @@ public class MinimaxAlgorithm {
 	}
 	
 	
-	/*
-	 * alpha : Best AI Move (Max)
-	 * beta : Best Player Move (Min)
-	 * returns: {score, move[0], move[1]}
-	 * */
-	private static Object[] minimaxSearchAB(int depth, BoardMaker board, boolean max, double alpha, double beta) {
+
+	private static Object[] MiniMax(int depth, BoardMaker board, boolean isComputer, double alpha, double beta) {
 		if(depth == 0) {
 			
-			Object[] x = {evaluateBoardForWhite(board, !max), null, null};
+			Object[] x = {doEvaluation(board, !isComputer), null, null};
 			return x;
 		}
 		
@@ -110,29 +106,30 @@ public class MinimaxAlgorithm {
 		
 		if(allPossibleMoves.size() == 0) {
 			
-			Object[] x = {evaluateBoardForWhite(board, !max), null, null};
+			Object[] x = {doEvaluation(board, !isComputer), null, null};
 			return x;
 		}
 		
 		Object[] bestMove = new Object[3];
 		
 		
-		if(max) {
+		if(isComputer) {
 			bestMove[0] = -1.0;
-			// Iterate for all possible moves that can be made.
+
 			for(int[] move : allPossibleMoves) {
-				// Create a temporary board that is equivalent to the current board
+
 				BoardMaker dummyBoard = new BoardMaker(board);
-				// Play the move to that temporary board without drawing anything
+
 				dummyBoard.addStoneNoGUI(move[1], move[0], false);
 				
-				// Call the minimax function for the next depth, to look for a minimum score.
-				Object[] tempMove = minimaxSearchAB(depth-1, dummyBoard, !max, alpha, beta);
+
+				Object[] tempMove = MiniMax(depth-1, dummyBoard, !isComputer, alpha, beta);
 				
-				// Updating alpha
+
 				if((Double)(tempMove[0]) > alpha) {
 					alpha = (Double)(tempMove[0]);
 				}
+				
 				// Pruning with beta
 				if((Double)(tempMove[0]) >= beta) {
 					return tempMove;
@@ -147,18 +144,19 @@ public class MinimaxAlgorithm {
 		}
 		else {
 			bestMove[0] = 100000000.0;
-			bestMove[1] = allPossibleMoves.get(0)[0];
-			bestMove[2] = allPossibleMoves.get(0)[1];
+
+			
 			for(int[] move : allPossibleMoves) {
 				BoardMaker dummyBoard = new BoardMaker(board);
 				dummyBoard.addStoneNoGUI(move[1], move[0], true);
 				
-				Object[] tempMove = minimaxSearchAB(depth-1, dummyBoard, !max, alpha, beta);
+				Object[] tempMove = MiniMax(depth-1, dummyBoard, !isComputer, alpha, beta);
 				
-				// Updating beta
+
 				if(((Double)tempMove[0]) < beta) {
 					beta = (Double)(tempMove[0]);
 				}
+				
 				// Pruning with alpha
 				if((Double)(tempMove[0]) <= alpha) {
 					return tempMove;
@@ -175,7 +173,7 @@ public class MinimaxAlgorithm {
 	
 	
 	
-	public static int evaluateHorizontal(int[][] boardMatrix, boolean forBlack, boolean playersTurn ) {
+	public static int horizontalChecking(int[][] boardMatrix, boolean isHuman, boolean HumansTurn ) {
 		
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -184,14 +182,14 @@ public class MinimaxAlgorithm {
 		for(int i=0; i<boardMatrix.length; i++) {
 			for(int j=0; j<boardMatrix[0].length; j++) {
 				
-				if(boardMatrix[i][j] == (forBlack ? 2 : 1)) {
+				if(boardMatrix[i][j] == (isHuman ? 2 : 1)) {
 					countConsecutive++;
 				}
 				
 				else if(boardMatrix[i][j] == 0) {
 					if(countConsecutive > 0) {
 						openEnds++;
-						score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+						score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 						countConsecutive = 0;
 						openEnds = 1;
 					}
@@ -201,7 +199,7 @@ public class MinimaxAlgorithm {
 				}
 				
 				else if(countConsecutive > 0) {
-					score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+					score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 					countConsecutive = 0;
 					openEnds = 0;
 				}
@@ -213,7 +211,7 @@ public class MinimaxAlgorithm {
 			}
 		
 			if(countConsecutive > 0) {
-				score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+				score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 				
 			}
 			countConsecutive = 0;
@@ -223,7 +221,7 @@ public class MinimaxAlgorithm {
 		return score;
 	}
 	
-	public static  int evaluateVertical(int[][] boardMatrix, boolean forBlack, boolean playersTurn ) {
+	public static  int verticalChecking(int[][] boardMatrix, boolean isHuman, boolean HumansTurn ) {
 		
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -231,14 +229,14 @@ public class MinimaxAlgorithm {
 		
 		for(int j=0; j<boardMatrix[0].length; j++) {
 			for(int i=0; i<boardMatrix.length; i++) {
-					if(boardMatrix[i][j] == (forBlack ? 2 : 1)) {
+					if(boardMatrix[i][j] == (isHuman ? 2 : 1)) {
 						countConsecutive++;
 					}
 					
 					else if(boardMatrix[i][j] == 0) {
 						if(countConsecutive > 0) {
 							openEnds++;
-							score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+							score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 							countConsecutive = 0;
 							openEnds = 1;
 						}
@@ -248,7 +246,7 @@ public class MinimaxAlgorithm {
 					}
 					
 					else if(countConsecutive > 0) {
-						score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+						score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 						countConsecutive = 0;
 						openEnds = 0;
 					}
@@ -260,7 +258,7 @@ public class MinimaxAlgorithm {
 			}
 			
 			if(countConsecutive > 0) {
-				score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+				score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 				
 			}
 			countConsecutive = 0;
@@ -270,7 +268,7 @@ public class MinimaxAlgorithm {
 		return score;
 	}
 	
-	public static  int evaluateDiagonal(int[][] boardMatrix, boolean forBlack, boolean playersTurn ) {
+	public static  int diagonalChecking(int[][] boardMatrix, boolean isHuman, boolean HumansTurn ) {
 		
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -285,14 +283,14 @@ public class MinimaxAlgorithm {
 		    for (int i = iStart; i <= iEnd; ++i) {
 		        int j = k - i;
 		        
-		        if(boardMatrix[i][j] == (forBlack ? 2 : 1)) {
+		        if(boardMatrix[i][j] == (isHuman ? 2 : 1)) {
 					countConsecutive++;
 				}
 				
 				else if(boardMatrix[i][j] == 0) {
 					if(countConsecutive > 0) {
 						openEnds++;
-						score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+						score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 						countConsecutive = 0;
 						openEnds = 1;
 					}
@@ -302,7 +300,7 @@ public class MinimaxAlgorithm {
 				}
 				
 				else if(countConsecutive > 0) {
-					score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+					score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 					countConsecutive = 0;
 					openEnds = 0;
 				}
@@ -314,7 +312,7 @@ public class MinimaxAlgorithm {
 			}
 			
 			if(countConsecutive > 0) {
-				score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+				score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 				
 			}
 			countConsecutive = 0;
@@ -331,14 +329,14 @@ public class MinimaxAlgorithm {
 		    for (int i = iStart; i <= iEnd; ++i) {
 		        int j = i - k;
 		        
-		        if(boardMatrix[i][j] == (forBlack ? 2 : 1)) {
+		        if(boardMatrix[i][j] == (isHuman ? 2 : 1)) {
 					countConsecutive++;
 				}
 				
 				else if(boardMatrix[i][j] == 0) {
 					if(countConsecutive > 0) {
 						openEnds++;
-						score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+						score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 						countConsecutive = 0;
 						openEnds = 1;
 					}
@@ -348,7 +346,7 @@ public class MinimaxAlgorithm {
 				}
 				
 				else if(countConsecutive > 0) {
-					score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+					score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 					countConsecutive = 0;
 					openEnds = 0;
 				}
@@ -360,7 +358,7 @@ public class MinimaxAlgorithm {
 		    }
 		
 			if(countConsecutive > 0) {
-				score += getGameScore(countConsecutive, openEnds, forBlack == playersTurn);
+				score += getGameScore(countConsecutive, openEnds, isHuman == HumansTurn);
 				
 			}
 			countConsecutive = 0;
@@ -372,46 +370,47 @@ public class MinimaxAlgorithm {
 	
 	
 	public static  int getGameScore(int consecutive, int openEnds, boolean currentTurn) {	
-		int winGuaranty = 1000000;
+
 		if (openEnds == 0 && consecutive < 5)
 			return 0;
 		
+		
 		switch (consecutive) {
-			case 5: 
-				return winScore;
-				
-			case 4:
-				if(currentTurn) return 1000000;
-				else {
-					if(openEnds == 2) return 250000;
-					else return 200;
-				}
+		case 5: 
+			return highestScore;
+			
+		case 4:
+			if(currentTurn) return 2000000;
+			else {
+				if(openEnds == 2) return 500000;
+				else return 500;
+			}
 
-				
-			case 3:
-				if(openEnds == 2) {
-					if(currentTurn) return 50000;
-					else return 200;
-				}
-				else {
-					if(currentTurn) return 10;
-					else return 5;
-				}
-				
-			case 2:
-				if(openEnds == 2) {
-					if(currentTurn) return 7;
-					else return 5;
-				}
-				else {
-					return 3;
-				}
-				
-			case 1:				
-					return 1;
+			
+		case 3:
+			if(openEnds == 2) {
+				if(currentTurn) return 100000;
+				else return 400;
+			}
+			else {
+				if(currentTurn) return 30;
+				else return 10;
+			}
+			
+		case 2:
+			if(openEnds == 2) {
+				if(currentTurn) return 15;
+				else return 10;
+			}
+			else {
+				return 5;
+			}
+			
+		case 1:				
+				return 1;
 
-			default:
-				return 2*winScore;
+		default:
+			return 0;
 		}
 		
 	}
