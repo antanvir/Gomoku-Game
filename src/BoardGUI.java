@@ -10,6 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
@@ -29,7 +30,7 @@ public class BoardGUI extends JPanel {
 	public BoardGUI(int boardWidth, int totalCell) {
 		this.boardWidth = boardWidth;
 		this.totalCell = totalCell;
-		this.cellLength  = boardWidth / totalCell;
+		this.cellLength  = (boardWidth -300) / totalCell;
 		
 		
 		image = new BufferedImage(boardWidth, boardWidth, BufferedImage.TYPE_INT_ARGB);
@@ -43,14 +44,21 @@ public class BoardGUI extends JPanel {
 		
 		g2D.setColor(Color.black);
 		
-		for(int i=1; i<=totalCell; i++) {
-			g2D.drawLine(i*cellLength, 0, i*cellLength, boardWidth);
+		for(int i=0; i<=totalCell; i++) {
+			g2D.drawLine(i*cellLength, 100, i*cellLength, boardWidth-200);
 		}
 		
 		
-		for(int i=1; i<=totalCell; i++) {
-			g2D.drawLine(0, i*cellLength, boardWidth, i*cellLength);
+		for(int i=0; i<=totalCell; i++) {
+			g2D.drawLine(0, 100+i*cellLength, boardWidth-300, 100+i*cellLength);
 		}
+		
+		int x = 320,y=850;
+		int arrowValue = 10;
+		g2D.setFont(new Font("Serif", Font.BOLD, 20));
+		g2D.drawString("Arrows Left", 200, 850);
+		g2D.drawString(Integer.toString(arrowValue),x,y);
+	
 		
 		
 	}
@@ -59,7 +67,7 @@ public class BoardGUI extends JPanel {
 	public int getRelativePos(int x) {
 		if(x >= boardWidth) x = boardWidth-1;
 		
-		return (int) ( x * totalCell / boardWidth );
+		return (int) ( x * totalCell / (boardWidth-300) );
 	}
 	
 	

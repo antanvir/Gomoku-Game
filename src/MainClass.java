@@ -7,7 +7,7 @@ public class MainClass {
 	
 	public static void main(String[] args) {
 		
-		final int width = 600;
+		final int width = 1000;
 
 		final GUI_Frame gui = new GUI_Frame(width, width, "GoMoku Game (Five-in-a-row)");
 		
